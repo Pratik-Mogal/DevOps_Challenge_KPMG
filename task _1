@@ -1,0 +1,57 @@
+Here are the steps on how to create a 3-tier environment on GCP using Terraform:
+
+Create a new Terraform project folder inside GCP.
+Initialize Terraform using command --> terraform init.
+Create a main.tf file in code editor of cloud shell and add the following code:
+
+resource "google_compute_instance" "web" {         //resource provider is google cloud
+  name = "web"
+  machine_type = "n1-standard-1"
+  zone = "us-central1-a"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+      egress {
+        egress_rule {
+          to_port = 0
+          to_addresses = ["0.0.0.0/0"]
+        }
+      }
+    }
+  }
+}
+
+resource "google_cloudsql_instance" "db" {
+  name = "mydb"
+  region = "us-central1"
+  database_version = "POSTGRES_13"
+
+  settings {
+    tier = "db-f1-micro"
+    machine_type = "n1-standard-1"
+  }
+
+  user_name = "root"
+  password = "mysecretpassword"
+}
+This code will create a new Compute Engine instance called web and a Cloud SQL instance called mydb.
+
+Create a variables.tf file (optional but recommanded) and add the following code:
+variable "project_id" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}
+This code defines two variables, project_id and region, which will be used by Terraform to create the resources.
+Apply Terraform. --> terraform apply
+This command will create the resources defined in the main.tf file.
+after completing all destroy the terraform infratructure using terraform destroy
