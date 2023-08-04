@@ -1,0 +1,40 @@
+write code that will query the meta data of an instance within GCP and provide a json formatted output. 
+
+
+import json
+import os
+
+def get_metadata(key):
+  """Gets the metadata for the specified key."""
+
+  return os.environ.get(key)
+
+def main():
+  """Queries the metadata of the current instance and prints the results in JSON format."""
+
+  metadata = {}
+  for key in ["instance_id", "zone", "project_id"]:
+    metadata[key] = get_metadata(key)
+
+  print(json.dumps(metadata, indent=2))
+
+if __name__ == "__main__":
+  main()
+
+
+
+To implement this code in GCP, I create a new Compute Engine instance and then run the code on the instance. Here are the steps:
+
+Create a new Compute Engine instance.
+In the instance's SSH console, open a Python interpreter.
+Import the necessary modules.
+Run the code.
+For example, I create a new instance with the following command:
+
+gcloud compute instances create my-instance --machine-type n1-standard-1 --zone us-central1-a
+Once the instance has been created, I connect to it using SSH:
+
+ssh my-instance
+In the SSH console, I open a Python interpreter:
+
+python
